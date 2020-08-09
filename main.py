@@ -92,31 +92,38 @@ def actualizar_framework(path=os.getcwd()):
 
         with ZipFile(cobrapath+"/backups/jsee.zip", 'r') as zipObj:
             zipObj.extractall(cobrapath+"/backups/")
-        for elem in os.listdir(cobrapath+"/backups/"+settings.framework+"-master"):
-            if elem not in ["package.json",
-                                "settings.json",
+        for dirname, subdirs, files in os.walk(cobrapath+"/backups/"+settings.framework+"-master"):
+            for filename in files:
+                elem=[len(cobrapath+"/backups/"+settings.framework+"-master/"):]
+                if elem not in ["package.json",
+                                "settings.js",
                                 "index.js",
                                 "package-lock.json",
                                 ]:
-                if os.path.exists(path+"/"+elem):
-                
-                    if os.path.isfile(path+"/"+elem):
-                        os.remove(path+"/"+elem)
+                    if os.path.exists(path+"/"+elem):
+                        print(elem)
+                        if os.path.isfile(path+"/"+elem):
+                            os.remove(path+"/"+elem)
+                            shutil.move(cobrapath+"/backups/"+settings.framework+"-master/"+elem,path)
+                    else:
+                        shutil.move(cobrapath+"/backups/"+settings.framework+"-master/"+elem,path)
 
-                shutil.move(cobrapath+"/backups/"+settings.framework+"-master/"+elem,path)
-            else:
-            
-                if fileName=="package.json":
-                    with open(path+"/package.json","r") as f:
-                        data2=json.loads(f.read())
-                    data=zip.read(path+"/package.json")
-                    data3=data2
-                    for elem2 in data2["dependencies"]: 
-                        for elem in data["dependencies"]:
-                            if elem2==elem3:
-                                break
-                        else:
-                            data3["dependencies"][elem2]=data2["dependencies"][elem2]
+                elif elem=="package.json":
+                        with open(path+"/package.json","r") as f:
+                            data2=json.loads(f.read())
+                        with open(cobrapath+"/backups/"+settings.framework+"-master/package.json","r") as f:
+                            data=json.loads(f.read())
+                        data3=data2
+                        for elem2 in data2["dependencies"]: 
+                            for elem in data["dependencies"]:
+                                if elem2==elem:
+                                    break
+                            else:
+                                data3["dependencies"][elem]=data["dependencies"][elem]
+                        with open(path+"/package.json","w") as f:
+                            f.write(json.dumps(data3,indent=4, sort_keys=True))
+
+
         print("Sistema actualizado")
 
 
