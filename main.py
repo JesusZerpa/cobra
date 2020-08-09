@@ -94,7 +94,7 @@ def actualizar_framework(path=os.getcwd()):
             zipObj.extractall(cobrapath+"/backups/")
         for dirname, subdirs, files in os.walk(cobrapath+"/backups/"+settings.framework+"-master"):
             for filename in files:
-                elem=[len(cobrapath+"/backups/"+settings.framework+"-master/"):]
+                elem=os.path.join(dirname, filename)[len(cobrapath+"/backups/"+settings.framework+"-master/"):]
                 if elem not in ["package.json",
                                 "settings.js",
                                 "index.js",
