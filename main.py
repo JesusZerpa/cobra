@@ -101,7 +101,7 @@ def actualizar_framework(path=os.getcwd()):
                 if os.path.exists(path+"/"+elem):
                 
                     if os.path.isfile(path+"/"+elem):
-                        os.remove(path+elem)
+                        os.remove(path+"/"+elem)
 
                 shutil.move(cobrapath+"/backups/"+settings.framework+"-master/"+elem,path)
             else:
