@@ -1,14 +1,12 @@
-<<<<<<< HEAD
+
 import settings,os,pathlib,requests,shutil,json
-=======
-import settings,os,pathlib,requests,shutil
->>>>>>> c828fcc1d4daff75b19a0eee12ef1f3a33f7596d
+
 from zipfile import ZipFile
 __version__="0.0.1"
 print(f"Bienvenidos a Cobra {__version__}")
 print("Asistente de configuracion de frameworks")
 frameworks={
-<<<<<<< HEAD
+
     "jsee":"https://gitlab.com/jesbram/jsee/-/archive/master/jsee-master.zip"
 }
 exclude=["cobra",
@@ -66,9 +64,7 @@ def actualizar_framework(path=os.getcwd()):
                 with open(cobrapath+"/backups/"+settings.framework+"-master/package.json","w") as f:
                     f.write(json.dumps(data3, indent=4, sort_keys=True))
         print("Sistema actualizado")
-=======
-	"jsee":"https://gitlab.com/jesbram/jsee/-/archive/master/jsee-master.zip"
-}
+
 exclude=["cobra",
 		 "node_modules"
 		]
@@ -123,28 +119,14 @@ def actualizar_framework(path=os.getcwd()):
 						else:
 							data3["dependencies"][elem2]=data2["dependencies"][elem2]
 		print("Sistema actualizado")
->>>>>>> c828fcc1d4daff75b19a0eee12ef1f3a33f7596d
+
 
 print("Selecciona las acciones que desea realizar")
 print("1)Actualizar framework")
 print("2)Salir")
 option=input("[opcion]:")
 if option.strip()=="1":
-<<<<<<< HEAD
-    print("Actualizando framework...")
-    if str(pathlib.Path(__file__).parent.absolute())!=os.getcwd():
-        actualizar_framework()
 
-    else:
-        print("No se ha determinado la ubicacion de su framework respecto a cobra")
-        print("Por favor indique la ruta absoluta de su framework")
-        path=input("[path]:")
-
-        if path: actualizar_framework(path=path)
-        else: actualizar_framework()
-
-    
-=======
 	print("Actualizando framework...")
 	if str(pathlib.Path(__file__).parent.absolute())!=os.getcwd():
 		actualizar_framework()
@@ -156,7 +138,4 @@ if option.strip()=="1":
 
 		if path: actualizar_framework(path=path)
 		else: actualizar_framework()
-
-	
->>>>>>> c828fcc1d4daff75b19a0eee12ef1f3a33f7596d
 
