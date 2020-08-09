@@ -1,5 +1,5 @@
 
-import settings,os,pathlib,requests,shutil,json
+import settings,os,pathlib,requests,shutil,json,time
 
 from zipfile import ZipFile
 __version__="0.0.1"
@@ -18,8 +18,7 @@ def hacer_backup():
 def actualizar_framework(path=os.getcwd()):
     if settings.framework in frameworks:
         r=requests.get(frameworks[settings.framework],stream=True)
-        print(cobrapath)
-        with open(cobrapath+"/backups/jsee.zip", 'wb') as fd:
+        with open(cobrapath+"/backups/"+settings.framework+".zip", 'wb') as fd:
             for chunk in r.iter_content(chunk_size=128):
                 fd.write(chunk)
         with  ZipFile(cobrapath+"/backups/backup.zip", 'w') as fd:
@@ -74,7 +73,7 @@ def hacer_backup():
 def actualizar_framework(path=os.getcwd()):
     if settings.framework in frameworks:
         r=requests.get(frameworks[settings.framework],stream=True)
-        print(cobrapath)
+ 
         with open(cobrapath+"/backups/jsee.zip", 'wb') as fd:
             for chunk in r.iter_content(chunk_size=128):
                 fd.write(chunk)
@@ -87,31 +86,38 @@ def actualizar_framework(path=os.getcwd()):
        
                         fd.write(filepath[len(os.getcwd()+"/"):])
             fd.close()
-
-        
-
+        updatepath=cobrapath+"/backups/"+settings.framework+"-master/"
         with ZipFile(cobrapath+"/backups/jsee.zip", 'r') as zipObj:
             zipObj.extractall(cobrapath+"/backups/")
-        for dirname, subdirs, files in os.walk(cobrapath+"/backups/"+settings.framework+"-master"):
+        for dirname, subdirs, files in os.walk(updatepath):
             for filename in files:
-                elem=os.path.join(dirname, filename)[len(cobrapath+"/backups/"+settings.framework+"-master/"):]
+                elem=os.path.join(dirname, filename)[len(updatepath):]
                 if elem not in ["package.json",
                                 "settings.js",
                                 "index.js",
                                 "package-lock.json",
                                 ]:
+
                     if os.path.exists(path+"/"+elem):
-                        print(elem)
+
                         if os.path.isfile(path+"/"+elem):
                             os.remove(path+"/"+elem)
-                            shutil.move(cobrapath+"/backups/"+settings.framework+"-master/"+elem,path)
+                            while os.path.exists(path+"/"+elem):
+                                time.sleep(0.5)
+                            shutil.move(updatepath+elem,path+"/"+elem)
                     else:
-                        shutil.move(cobrapath+"/backups/"+settings.framework+"-master/"+elem,path)
+                     
+                        try:
+                            shutil.copy2(updatepath+elem,path+"/"+elem)
+                        except:
+                            #Si la ruta de carpetas no existe, la creara y repetira la accion de copiar el archivo                           
+                            os.makedirs(path+"/"+"/".join(elem.split("/")[:-1]))
+                            shutil.copy2(updatepath+elem,path+"/"+elem)
 
                 elif elem=="package.json":
                         with open(path+"/package.json","r") as f:
                             data2=json.loads(f.read())
-                        with open(cobrapath+"/backups/"+settings.framework+"-master/package.json","r") as f:
+                        with open(updatepath+"package.json","r") as f:
                             data=json.loads(f.read())
                         data3=data2
                         for elem2 in data2["dependencies"]: 
@@ -126,15 +132,20 @@ def actualizar_framework(path=os.getcwd()):
 
         print("Sistema actualizado")
 
+if not os.path.exists(cobrapath+"/settings.py"):
+    print("Generando archivo de configuracion settings.py")
+    shutil.copy2(cobrapath+"/settings.example.py",cobrapath+"/settings.py")
 
-print("Selecciona las acciones que desea realizar")
-print("1)Actualizar framework")
-print("2)Salir")
+print("Selecciona las acciones que desea realizar:")
+print("1) Actualizar framework")
+print("2) Ver configuracion")
+print("3) editar configuracion")
+print("4) Salir")
 option=input("[opcion]:")
 if option.strip()=="1":
 
     print("Actualizando framework...")
-    if str(pathlib.Path(__file__).parent.absolute())!=os.getcwd():
+    if cobrapath!=os.getcwd():
         actualizar_framework()
 
     else:
@@ -144,4 +155,20 @@ if option.strip()=="1":
 
         if path: actualizar_framework(path=path)
         else: actualizar_framework()
+elif option.strip()=="2":
+    print("\nSETTINGS:\n")
+    for elem in dir(settings):
+        
+        if (type(getattr(settings,elem))==list 
+            or type(getattr(settings,elem))==str 
+            or type(getattr(settings,elem))==float 
+            or type(getattr(settings,elem))==int 
+            or type(getattr(settings,elem))==bool 
+            or type(getattr(settings,elem))==dict 
+            or type(getattr(settings,elem))==tuple) and elem not in ["__builtins__"]:
+            print(elem,"=",getattr(settings,elem))
 
+elif option.strip()=="3":
+    os.system("nano "+cobrapath+"/settings.py")
+elif option.strip()=="4":
+    print("Adios!")
