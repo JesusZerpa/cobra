@@ -172,11 +172,27 @@ elif option.strip()=="2":
 elif option.strip()=="3":
     os.system("nano "+cobrapath+"/settings.py")
 elif option.strip()=="4":
-    print(os.path.exists("doc/source"))
+    """
     if os.path.exists("doc/source/apps"):
         os.system("rm doc/source/apps")
     time.sleep(1)
     os.system("cd doc/source && ln -s ../../apps")
+    """
+    with open("doc/source/index.rst") as f:
+        doc=f.read()
+    with open("doc/source/index.rst","w") as f:
+        
+        i=doc.find(".. toctree::")+len(".. toctree::")
+        f=doc.find(":maxdepth:",i)
+        start=doc[:i]
+        apps=json.loads(os.popen('node info.js action=get_apps').read())
+        for app in apps:
+            if os.path.exists("apps/"+app+"/doc/index.rst"):
+                start+="   ../../apps/"+app+"/doc/index\n"
+        start+=doc[f:]
+        f.write(start)
+
+
     os.system("cd doc && make html")
 elif option.strip()=="5":
     print("Adios!")
