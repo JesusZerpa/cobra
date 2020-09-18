@@ -139,8 +139,9 @@ if not os.path.exists(cobrapath+"/settings.py"):
 print("Selecciona las acciones que desea realizar:")
 print("1) Actualizar framework")
 print("2) Ver configuracion")
-print("3) editar configuracion")
-print("4) Salir")
+print("3) Editar configuracion")
+print("4) Construir documentación")
+print("5) Salir")
 option=input("[opcion]:")
 if option.strip()=="1":
 
@@ -171,4 +172,11 @@ elif option.strip()=="2":
 elif option.strip()=="3":
     os.system("nano "+cobrapath+"/settings.py")
 elif option.strip()=="4":
+    print(os.path.exists("doc/source"))
+    if os.path.exists("doc/source/apps"):
+        os.system("rm doc/source/apps")
+    time.sleep(1)
+    os.system("cd doc/source && ln -s ../../apps")
+    os.system("cd doc && make html")
+elif option.strip()=="5":
     print("Adios!")
