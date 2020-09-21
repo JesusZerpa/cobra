@@ -182,14 +182,19 @@ elif option.strip()=="4":
         doc=f.read()
     with open("doc/source/index.rst","w") as f:
         
-        i=doc.find(".. toctree::")+len(".. toctree::")
-        f=doc.find(":maxdepth:",i)
-        start=doc[:i]
-        apps=json.loads(os.popen('node info.js action=get_apps').read())
+        ini=doc.find(".. toctree::")+len(".. toctree::")
+        fin=doc.find(":maxdepth:",ini)
+        start=doc[:ini]+"\n"
+        data=os.popen('node info.js action=get_apps').read()
+     
+        apps=json.loads(data)
         for app in apps:
             if os.path.exists("apps/"+app+"/doc/index.rst"):
                 start+="   ../../apps/"+app+"/doc/index\n"
-        start+=doc[f:]
+        for elem in os.listdir("doc/source/"):
+            if elem.endswith(".rst"):
+                start+="   "+elem+"\n"
+        start+=doc[fin:]
         f.write(start)
 
 
