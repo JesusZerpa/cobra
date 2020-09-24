@@ -172,12 +172,12 @@ elif option.strip()=="2":
 elif option.strip()=="3":
     os.system("nano "+cobrapath+"/settings.py")
 elif option.strip()=="4":
-    """
+    
     if os.path.exists("doc/source/apps"):
         os.system("rm doc/source/apps")
     time.sleep(1)
     os.system("cd doc/source && ln -s ../../apps")
-    """
+    
     with open("doc/source/index.rst") as f:
         doc=f.read()
     with open("doc/source/index.rst","w") as f:
@@ -192,12 +192,13 @@ elif option.strip()=="4":
             if os.path.exists("apps/"+app+"/doc/index.rst"):
                 start+="   ../../apps/"+app+"/doc/index\n"
         for elem in os.listdir("doc/source/"):
-            if elem.endswith(".rst"):
+            if elem.endswith(".rst") and not elem.startswith("_") and elem!="index.rst":
                 start+="   "+elem+"\n"
-        start+=doc[fin:]
+
+        start+="   "+doc[fin:]
         f.write(start)
 
 
-    os.system("cd doc && make html")
+    os.system("cd doc && make html && make latexpdf")
 elif option.strip()=="5":
     print("Adios!")
