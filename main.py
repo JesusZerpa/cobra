@@ -180,20 +180,26 @@ elif option.strip()=="4":
     
     with open("doc/source/index.rst") as f:
         doc=f.read()
+    order=[]
+    with open("doc/source/index.txt") as f:
+        order=f.readlines()
     with open("doc/source/index.rst","w") as f:
         
         ini=doc.find(".. toctree::")+len(".. toctree::")
         fin=doc.find(":maxdepth:",ini)
         start=doc[:ini]+"\n"
         data=os.popen('node info.js action=get_apps').read()
-     
+        start+="   "+"   ".join(order)+"\n"
         apps=json.loads(data)
         for app in apps:
             if os.path.exists("apps/"+app+"/doc/index.rst"):
                 start+="   ../../apps/"+app+"/doc/index\n"
+        """
         for elem in os.listdir("doc/source/"):
             if elem.endswith(".rst") and not elem.startswith("_") and elem!="index.rst":
                 start+="   "+elem+"\n"
+        """
+        
 
         start+="   "+doc[fin:]
         f.write(start)
