@@ -42,6 +42,8 @@ def actualizar_framework(path=os.getcwd()):
                                 "settings.js",
                                 "index.js",
                                 "package-lock.json",
+                                "webpack.config.js",
+                                "webpack.prod.js",
                                 "README.md"
                                 ]:
 
